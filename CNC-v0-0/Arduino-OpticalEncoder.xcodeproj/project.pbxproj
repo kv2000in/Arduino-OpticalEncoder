@@ -1,0 +1,72 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXFileReference section */
+		2A0141CA222B6FAF009B5745 /* CNC-v0-0.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = "CNC-v0-0.ino"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		2A0141C3222B6F9F009B5745 = {
+			isa = PBXGroup;
+			children = (
+				2A0141CA222B6FAF009B5745 /* CNC-v0-0.ino */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		2A0141C4222B6F9F009B5745 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1000;
+			};
+			buildConfigurationList = 2A0141C7222B6F9F009B5745 /* Build configuration list for PBXProject "Arduino-OpticalEncoder" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2A0141C3222B6F9F009B5745;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		2A0141C8222B6F9F009B5745 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		2A0141C9222B6F9F009B5745 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A0141C7222B6F9F009B5745 /* Build configuration list for PBXProject "Arduino-OpticalEncoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A0141C8222B6F9F009B5745 /* Debug */,
+				2A0141C9222B6F9F009B5745 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A0141C4222B6F9F009B5745 /* Project object */;
+}

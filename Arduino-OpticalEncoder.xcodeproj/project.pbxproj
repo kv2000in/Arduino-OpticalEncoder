@@ -6,10 +6,15 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXFileReference section */
+		2A0141CB222B713A009B5745 /* CNC-v0-0.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = "CNC-v0-0.ino"; path = "CNC-v0-0/CNC-v0-0.ino"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		2A0141C3222B6F9F009B5745 = {
 			isa = PBXGroup;
 			children = (
+				2A0141CB222B713A009B5745 /* CNC-v0-0.ino */,
 			);
 			sourceTree = "<group>";
 		};

@@ -1,5 +1,5 @@
 #define ENCODER0PINA         2      // interrupt pin (2,3 on nano)
-#define pinENA               3  //  will change
+#define pinENA               6
 #define pinIN1               4
 #define pinIN2               5
 
@@ -27,10 +27,14 @@ void setup()
   pinMode(pinENA,OUTPUT);
   pinMode(pinIN1,OUTPUT);
   pinMode(pinIN2,OUTPUT);
-  digitalWrite(pinIN1,LOW);
+
   //attach interrupt 
   attachInterrupt(digitalPinToInterrupt(ENCODER0PINA),onInterrupt, RISING);
   Serial.begin (9600);
+  //?Intialize the PWM??
+  analogWrite(pinENA, 0);
+  digitalWrite(pinIN1,LOW);
+  digitalWrite(pinIN2,LOW);
   delay(1000);
 }
  

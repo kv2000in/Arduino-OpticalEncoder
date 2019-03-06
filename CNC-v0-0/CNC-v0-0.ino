@@ -1,18 +1,22 @@
 #define ENCODER0PINA         2     // interrupt pin (2,3 on nano)
 #define ENCODER1PINA         3     // interrupt pin (2,3 on nano)
 #define pinENA               6
-#define pinIN1               4
-#define pinIN2               5
-
+#define pinINA1              4
+#define pinINA2              5
+#define pinENB               9
+#define pinINB1              7
+#define pinINB2              8
 
 long encoder0Position = 0;
 long encoder1Position = 0;
 //int PPR=2520; //pulses per rotation
-int PWM = 255;
+int PWMA = 255;
+int PWMB = 125;
 // volatile variables - modified by interrupt service routine (ISR)
 volatile long counter0=0;
 volatile long counter1=0;
 bool motorARunning = false;
+bool motorBRunning = false;
 //Serial Read stuff
 const byte numChars = 32;
 char receivedChars[numChars]; // an array to store the received data
@@ -29,17 +33,16 @@ void setup()
   pinMode(ENCODER0PINA, INPUT_PULLUP);
   pinMode(ENCODER1PINA, INPUT_PULLUP);
   pinMode(pinENA,OUTPUT);
-  pinMode(pinIN1,OUTPUT);
-  pinMode(pinIN2,OUTPUT);
-
+  pinMode(pinINA1,OUTPUT);
+  pinMode(pinINA2,OUTPUT);
+  pinMode(pinENB,OUTPUT);
+  pinMode(pinINB1,OUTPUT);
+  pinMode(pinINB2,OUTPUT);
   //attach interrupts 
   attachInterrupt(digitalPinToInterrupt(ENCODER0PINA),onInterrupt0, RISING);
   attachInterrupt(digitalPinToInterrupt(ENCODER1PINA),onInterrupt1, RISING); 
   Serial.begin (9600);
-  //?Intialize the PWM??
-  analogWrite(pinENA, 0);
-  digitalWrite(pinIN1,LOW);
-  digitalWrite(pinIN2,LOW);
+
   delay(1000);
 }
  
@@ -80,24 +83,44 @@ void onInterrupt1()
   counter1++;
 
 }
-void rotateF()
+void rotateAF()
 {
-    analogWrite(pinENA, PWM);
-    digitalWrite(pinIN1,HIGH);
-    digitalWrite(pinIN2,LOW);
+    analogWrite(pinENA, PWMA);
+    digitalWrite(pinINA1,HIGH);
+    digitalWrite(pinINA2,LOW);
     motorARunning=true;
 }
-void rotateR()
+void rotateAR()
 {
-    analogWrite(pinENA, PWM);
-    digitalWrite(pinIN1,LOW);
-    digitalWrite(pinIN2,HIGH);
+    analogWrite(pinENA, PWMA);
+    digitalWrite(pinINA1,LOW);
+    digitalWrite(pinINA2,HIGH);
     motorARunning=true;
 }
-void rotateStop()
+void rotateAStop()
 {
   analogWrite(pinENA, 0);
   motorARunning=false;
+}
+
+void rotateBF()
+{
+    analogWrite(pinENB, PWMB);
+    digitalWrite(pinINB1,HIGH);
+    digitalWrite(pinINB2,LOW);
+    motorBRunning=true;
+}
+void rotateBR()
+{
+    analogWrite(pinENB, PWMB);
+    digitalWrite(pinINB1,LOW);
+    digitalWrite(pinINB2,HIGH);
+    motorBRunning=true;
+}
+void rotateBStop()
+{
+  analogWrite(pinENB, 0);
+  motorBRunning=false;
 }
 
 //Serial Read Functions
@@ -172,37 +195,73 @@ void setPosition(char dir, long steps)
     {
          if (dir=='F') //Single quotes - Double quotes don't work.
             {
-                if (not (motorARunning)) {rotateF();}
+                if (not (motorARunning)) {rotateAF();}
              }
          else if (dir=='R')
             {
-               if (not (motorARunning)) {rotateR();}
+               if (not (motorARunning)) {rotateAR();}
             }
      }
      else
      {
         if (motorARunning)
             {
-             rotateStop();
+             rotateAStop();
              if (dir=='F')
             {
                 encoder0Position = encoder0Position+counter0;
-                encoder1Position = encoder1Position+counter1;
+
              }
          else if (dir=='R')
             {
                encoder0Position = encoder0Position-counter0;
-               encoder1Position = encoder1Position+counter1;
+               
             }
         
         counter0 =0;
+       
+
+            }
+     
+      Serial.print("Encoder 0 is at ");
+      Serial.println(encoder0Position); 
+
+     }
+         if (steps>counter1)
+    {
+         if (dir=='f') //Single quotes - Double quotes don't work.
+            {
+                if (not (motorBRunning)) {rotateBF();}
+             }
+         else if (dir=='r')
+            {
+               if (not (motorBRunning)) {rotateBR();}
+            }
+     }
+     else
+     {
+        if (motorBRunning)
+            {
+             rotateBStop();
+             if (dir=='f')
+            {
+                
+                encoder1Position = encoder1Position+counter1;
+             }
+         else if (dir=='r')
+            {
+               
+               encoder1Position = encoder1Position-counter1;
+            }
+        
+      
         counter1 =0;
 
             }
-      newData = false;
-      Serial.print("Encoder 0 is at ");
-      Serial.println(encoder0Position); 
+     
+
       Serial.print("Encoder 1 is at ");
       Serial.println(encoder1Position); 
      }
+      newData = false;
 }

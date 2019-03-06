@@ -225,10 +225,12 @@ void setPosition(char dir, long steps)
      
       Serial.print("Encoder 0 is at ");
       Serial.println(encoder0Position); 
+      newData = false;
 
      }
-         if (steps>counter1)
+    if (steps>counter1)
     {
+      
          if (dir=='f') //Single quotes - Double quotes don't work.
             {
                 if (not (motorBRunning)) {rotateBF();}
@@ -240,6 +242,7 @@ void setPosition(char dir, long steps)
      }
      else
      {
+      
         if (motorBRunning)
             {
              rotateBStop();
@@ -262,6 +265,7 @@ void setPosition(char dir, long steps)
 
       Serial.print("Encoder 1 is at ");
       Serial.println(encoder1Position); 
-     }
       newData = false;
+     }
+      
 }

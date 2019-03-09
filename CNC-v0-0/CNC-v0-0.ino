@@ -17,6 +17,10 @@ volatile long counter0=0;
 volatile long counter1=0;
 bool motorARunning = false;
 bool motorBRunning = false;
+long stepsA;
+long stepsB;
+char dirA;
+char dirB;
 //Serial Read stuff
 const byte numChars = 32;
 char receivedChars[numChars]; // an array to store the received data
@@ -52,11 +56,10 @@ void loop()
   recvWithStartEndMarkers();
   
   //showNewData();
-  if (newData)
-    {
+
       setPosition(DIR[0],VALUE);
       
-    }
+  
   
   
   
@@ -190,82 +193,75 @@ void setPosition(char dir, long steps)
 {
   //During the first run @ full speed (PWM 255, 24V PSU) - Some interrupts are missed probably - and the rotation is slightly more than (I think) the number of steps
   //Subsequent repeated  calls to this function yields accurate positions. May be something to do with function initialization
-    
-    if (steps>counter0)
-    {
+  //Check if this data has already been seen
+
+  if (newData)
+  {
+    // It is new data from Serial - it wants to move the motors one way or the other
          if (dir=='F') //Single quotes - Double quotes don't work.
             {
-                if (not (motorARunning)) {rotateAF();}
+                if (not (motorARunning)) {rotateAF(); stepsA=steps; dirA=dir;}
              }
          else if (dir=='R')
             {
-               if (not (motorARunning)) {rotateAR();}
+               if (not (motorARunning)) {rotateAR();stepsA=steps;dirA=dir;}
             }
-     }
-     else
-     {
-        if (motorARunning)
+         else if (dir=='f') //Single quotes - Double quotes don't work.
+            {
+                if (not (motorBRunning)) {rotateBF();stepsB=steps;dirB=dir;}
+             }
+         else if (dir=='r')
+            {
+               if (not (motorBRunning)) {rotateBR();stepsB=steps;dirB=dir;}
+            }
+    newData=false;
+    }
+
+    //Now motors are running - count steps
+    if ((motorARunning) and (stepsA<counter0))
             {
              rotateAStop();
-             if (dir=='F')
+             
+             
+             if (dirA=='F')
             {
                 encoder0Position = encoder0Position+counter0;
 
              }
-         else if (dir=='R')
+             else if (dirA=='R')
             {
                encoder0Position = encoder0Position-counter0;
                
             }
-        
+            
         counter0 =0;
-       
+        Serial.print("Encoder 0 is at ");
+        Serial.println(encoder0Position); 
 
             }
      
-      Serial.print("Encoder 0 is at ");
-      Serial.println(encoder0Position); 
-      newData = false;
-
-     }
-    if (steps>counter1)
+    if ((motorBRunning) and (stepsB<counter1))
     {
-      
-         if (dir=='f') //Single quotes - Double quotes don't work.
-            {
-                if (not (motorBRunning)) {rotateBF();}
-             }
-         else if (dir=='r')
-            {
-               if (not (motorBRunning)) {rotateBR();}
-            }
-     }
-     else
-     {
-      
-        if (motorBRunning)
-            {
-             rotateBStop();
-             if (dir=='f')
+              rotateBStop();
+              
+              
+             if (dirB=='f')
             {
                 
                 encoder1Position = encoder1Position+counter1;
              }
-         else if (dir=='r')
+         else if (dirB=='r')
             {
                
                encoder1Position = encoder1Position-counter1;
             }
-        
-      
+            
         counter1 =0;
+        Serial.print("Encoder 1 is at ");
+        Serial.println(encoder1Position); 
 
             }
      
 
-      Serial.print("Encoder 1 is at ");
-      Serial.println(encoder1Position); 
-      newData = false;
-     }
-      
+
 }

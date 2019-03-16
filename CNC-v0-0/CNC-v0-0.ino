@@ -235,7 +235,7 @@ void setPosition(char dir, long steps)
             }
             
         counter0 =0;
-        Serial.print("Encoder 0 is at ");
+        Serial.print("0-");
         Serial.println(encoder0Position); 
 
             }
@@ -257,7 +257,7 @@ void setPosition(char dir, long steps)
             }
             
         counter1 =0;
-        Serial.print("Encoder 1 is at ");
+        Serial.print("1-");
         Serial.println(encoder1Position); 
 
             }

@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		2A0141CB222B713A009B5745 /* CNC-v0-0.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = "CNC-v0-0.ino"; path = "CNC-v0-0/CNC-v0-0.ino"; sourceTree = "<group>"; };
+		2A0141CC223452B0009B5745 /* GCodeTranslator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = GCodeTranslator.py; path = "CNC-v0-0/GCodeTranslator.py"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -15,6 +16,7 @@
 			isa = PBXGroup;
 			children = (
 				2A0141CB222B713A009B5745 /* CNC-v0-0.ino */,
+				2A0141CC223452B0009B5745 /* GCodeTranslator.py */,
 			);
 			sourceTree = "<group>";
 		};

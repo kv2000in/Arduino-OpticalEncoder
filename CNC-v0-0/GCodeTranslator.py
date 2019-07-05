@@ -16,7 +16,7 @@ ser.timeout=30;
 ser.open()
 time.sleep(5)
 try:
-	ser.write('<f-25200>\n')
+	ser.write('<f-25200>\n<F-25200>\n')
 	print(ser.readline().split('-')[0])
 	ser.write('<F-25200>\n')
 	print(ser.readline().split('-')[0])

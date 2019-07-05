@@ -1,11 +1,11 @@
-#define ENCODER0PINA         2     // interrupt pin (2,3 on nano)
-#define ENCODER1PINA         3     // interrupt pin (2,3 on nano)
-#define pinENA               6
-#define pinINA1              4
-#define pinINA2              5
-#define pinENB               9
-#define pinINB1              7
-#define pinINB2              8
+#define ENCODER0PINA         2    //Atmega pin PD2/INT0 // interrupt pin (2,3 on nano)
+#define ENCODER1PINA         3    //Atmega pin PD3/INT1 // interrupt pin (2,3 on nano)
+#define pinENA               4    //Atmega pin PD4
+#define pinINA1              5    //Atmega pin PD5
+#define pinINA2              6    //Atmega pin PD6
+#define pinENB               7    //Atmega pin PD7
+#define pinINB1              8    //Atmega pin PB0
+#define pinINB2              9    //Atmega pin PB1
 
 long encoder0Position = 0;
 long encoder1Position = 0;

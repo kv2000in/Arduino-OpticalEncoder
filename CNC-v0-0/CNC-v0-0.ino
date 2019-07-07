@@ -11,7 +11,7 @@ long encoder0Position = 0;
 long encoder1Position = 0;
 //int PPR0=2520; //pulses per rotation
 //int PPR1=892; //pulses per rotation
-int PWMA = 170;
+int PWMA = 140;
 int PWMB = 140;
 // volatile variables - modified by interrupt service routine (ISR)
 volatile long counter0=0;
@@ -51,6 +51,14 @@ void setup()
   Serial.begin (9600);
 
   delay(1000);
+  //Trying to see if turning off the motor via pinIN rather than pinEN leads to less overshoot
+  analogWrite(pinENA, PWMA);
+  digitalWrite(pinINA1,LOW);
+  digitalWrite(pinINA2,LOW);
+  
+  analogWrite(pinENB, PWMB);
+  digitalWrite(pinINB1,LOW);
+  digitalWrite(pinINB2,LOW);
   //Turn on motor A at PWMA speed, calculate offsetA, Repeat for motor B
 }
  
@@ -92,21 +100,20 @@ void onInterrupt1()
 }
 void rotateAF()
 {
-    analogWrite(pinENA, PWMA);
+    
     digitalWrite(pinINA1,HIGH);
-    digitalWrite(pinINA2,LOW);
     motorARunning=true;
 }
 void rotateAR()
 {
-    analogWrite(pinENA, PWMA);
-    digitalWrite(pinINA1,LOW);
+    
     digitalWrite(pinINA2,HIGH);
     motorARunning=true;
 }
 void rotateAStop()
 {
-  analogWrite(pinENA, 0);
+  digitalWrite(pinINA1,LOW);
+  digitalWrite(pinINA2,LOW);
   motorARunning=false;
   delay(200);//Significant overshoot - even after stopping - counter keeps running. Printing counter 100 ms after setting it to 0 - still gives some values.
               //Hence a delay outputs actual overshot position of the encoder
@@ -114,21 +121,20 @@ void rotateAStop()
 
 void rotateBF()
 {
-    analogWrite(pinENB, PWMB);
+    
     digitalWrite(pinINB1,HIGH);
-    digitalWrite(pinINB2,LOW);
     motorBRunning=true;
 }
 void rotateBR()
 {
     analogWrite(pinENB, PWMB);
-    digitalWrite(pinINB1,LOW);
     digitalWrite(pinINB2,HIGH);
     motorBRunning=true;
 }
 void rotateBStop()
 {
-  analogWrite(pinENB, 0);
+  digitalWrite(pinINB1,LOW);
+  digitalWrite(pinINB2,LOW);
   motorBRunning=false;
   delay(200); //Significant overshoot - even after stopping - counter keeps running. Printing counter 100 ms after setting it to 0 - still gives some values.
               //Hence a delay outputs actual overshot position of the encoder 

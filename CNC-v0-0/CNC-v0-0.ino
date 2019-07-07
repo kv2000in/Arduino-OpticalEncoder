@@ -1,17 +1,18 @@
 #define ENCODER0PINA         2    //Atmega pin PD2/INT0 // interrupt pin (2,3 on nano)
 #define ENCODER1PINA         3    //Atmega pin PD3/INT1 // interrupt pin (2,3 on nano)
 #define pinENA               4    //Atmega pin PD4
-#define pinINA1              5    //Atmega pin PD5
-#define pinINA2              6    //Atmega pin PD6
+#define pinINA2              5    //Atmega pin PD5
+#define pinINA1              6    //Atmega pin PD6
 #define pinENB               7    //Atmega pin PD7
 #define pinINB1              8    //Atmega pin PB0
 #define pinINB2              9    //Atmega pin PB1
 
 long encoder0Position = 0;
 long encoder1Position = 0;
-//int PPR=2520; //pulses per rotation
-int PWMA = 255;
-int PWMB = 125;
+//int PPR0=2520; //pulses per rotation
+//int PPR1=892; //pulses per rotation
+int PWMA = 170;
+int PWMB = 140;
 // volatile variables - modified by interrupt service routine (ISR)
 volatile long counter0=0;
 volatile long counter1=0;
@@ -19,6 +20,8 @@ bool motorARunning = false;
 bool motorBRunning = false;
 long stepsA;
 long stepsB;
+int offshootA=900;//To do: calculate and adjust offsoot dynamically
+int offshootB=200;
 char dirA;
 char dirB;
 //Serial Read stuff
@@ -48,6 +51,7 @@ void setup()
   Serial.begin (9600);
 
   delay(1000);
+  //Turn on motor A at PWMA speed, calculate offsetA, Repeat for motor B
 }
  
 void loop()
@@ -104,6 +108,8 @@ void rotateAStop()
 {
   analogWrite(pinENA, 0);
   motorARunning=false;
+  delay(200);//Significant overshoot - even after stopping - counter keeps running. Printing counter 100 ms after setting it to 0 - still gives some values.
+              //Hence a delay outputs actual overshot position of the encoder
 }
 
 void rotateBF()
@@ -124,6 +130,9 @@ void rotateBStop()
 {
   analogWrite(pinENB, 0);
   motorBRunning=false;
+  delay(200); //Significant overshoot - even after stopping - counter keeps running. Printing counter 100 ms after setting it to 0 - still gives some values.
+              //Hence a delay outputs actual overshot position of the encoder 
+
 }
 
 //Serial Read Functions
@@ -198,21 +207,22 @@ void setPosition(char dir, long steps)
   if (newData)
   {
     // It is new data from Serial - it wants to move the motors one way or the other
+    // if stepsA<offshootA - no point turning the motor. Repeat for stepsB     
          if (dir=='F') //Single quotes - Double quotes don't work.
             {
-                if (not (motorARunning)) {rotateAF(); stepsA=steps; dirA=dir;}
+                if (not (motorARunning)) {rotateAF(); stepsA=steps-offshootA; dirA=dir;}
              }
          else if (dir=='R')
             {
-               if (not (motorARunning)) {rotateAR();stepsA=steps;dirA=dir;}
+               if (not (motorARunning)) {rotateAR();stepsA=steps-offshootA;dirA=dir;}
             }
          else if (dir=='f') //Single quotes - Double quotes don't work.
             {
-                if (not (motorBRunning)) {rotateBF();stepsB=steps;dirB=dir;}
+                if (not (motorBRunning)) {rotateBF();stepsB=steps-offshootB;dirB=dir;}
              }
          else if (dir=='r')
             {
-               if (not (motorBRunning)) {rotateBR();stepsB=steps;dirB=dir;}
+               if (not (motorBRunning)) {rotateBR();stepsB=steps-offshootB;dirB=dir;}
             }
     newData=false;
     }
@@ -237,7 +247,6 @@ void setPosition(char dir, long steps)
         counter0 =0;
         Serial.print("0-");
         Serial.println(encoder0Position); 
-
             }
      
     if ((motorBRunning) and (stepsB<counter1))
@@ -255,11 +264,9 @@ void setPosition(char dir, long steps)
                
                encoder1Position = encoder1Position-counter1;
             }
-            
         counter1 =0;
         Serial.print("1-");
         Serial.println(encoder1Position); 
-
             }
      
 
